@@ -1,4 +1,3 @@
-
 /* Script for --shared -z combreloc: shared library, combine & sort relocs */
 OUTPUT_FORMAT("elf32-littlearm", "elf32-bigarm",
               "elf32-littlearm")
