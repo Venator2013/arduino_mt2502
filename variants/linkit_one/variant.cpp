@@ -288,10 +288,9 @@ extern "C"
 
 	void init(void)
 	{
-		int i;
 		VM_DCL_HANDLE gpio_handle;
 
-		for (i = 0; i < 8; i++)
+		for (int i = 0; i < 8; i++)
 		{
 			gpio_handle = vm_dcl_open(VM_DCL_GPIO, g_APinDescription[i].ulGpioId);
 			vm_dcl_control(gpio_handle, VM_DCL_GPIO_COMMAND_SET_MODE_0, NULL);
@@ -300,7 +299,7 @@ extern "C"
 			vm_dcl_control(gpio_handle, VM_DCL_GPIO_COMMAND_SET_DIRECTION_IN, NULL);
 			vm_dcl_close(gpio_handle);
 		}
-		for (i = 10; i < GPIO_MAX; i++)
+		for (int i = 10; i < GPIO_MAX; i++)
 		{
 			if (i == 20)
 				continue;
