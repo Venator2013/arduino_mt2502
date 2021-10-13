@@ -19,12 +19,6 @@ static void *g_base_address = NULL;
 
 int __g_errno = 0;
 
-void __cxa_pure_virtual()
-{
-    while (1)
-        ;
-}
-
 int *__errno()
 {
     return &__g_errno;
