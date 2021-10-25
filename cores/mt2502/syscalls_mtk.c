@@ -118,9 +118,6 @@ void __cxa_guard_release(int *g)
     *(char *)g = 1;
 }
 
-extern "C" void __cxa_pure_virtual(void) __attribute__((__noreturn__));
-extern "C" void __cxa_deleted_virtual(void) __attribute__((__noreturn__));
-
 void __cxa_pure_virtual(void)
 {
     while (1)
