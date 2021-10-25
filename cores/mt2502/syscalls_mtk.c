@@ -69,7 +69,6 @@ extern int _close(int file)
 extern int _fstat(int file, struct stat *st)
 {
     st->st_mode = S_IFCHR;
-
     return 0;
 }
 
@@ -109,8 +108,31 @@ extern int _getpid(void)
     return -1;
 }
 
-int __cxa_guard_acquire(int *g) { return !*(char *)(g); };
-void __cxa_guard_release(int *g) { *(char *)g = 1; };
+int __cxa_guard_acquire(int *g)
+{
+    return !*(char *)(g);
+}
+
+void __cxa_guard_release(int *g)
+{
+    *(char *)g = 1;
+}
+
+extern "C" void __cxa_pure_virtual(void) __attribute__((__noreturn__));
+extern "C" void __cxa_deleted_virtual(void) __attribute__((__noreturn__));
+
+void __cxa_pure_virtual(void)
+{
+    while (1)
+        ;
+}
+
+void __cxa_deleted_virtual(void)
+{
+
+    while (1)
+        ;
+}
 
 typedef void (**__init_array)(void);
 
