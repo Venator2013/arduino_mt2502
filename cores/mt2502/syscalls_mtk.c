@@ -7,6 +7,7 @@
 #include "vmdcl_pwm.h"
 #include "vmlog.h"
 #include "vmmemory.h"
+#include "vmsystem.h"
 #include "vmtype.h"
 
 typedef VMINT (*vm_get_sym_entry_t)(char *symbol);
