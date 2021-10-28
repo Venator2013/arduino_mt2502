@@ -196,7 +196,7 @@ extern "C" {
      *****************************************************************************/
     VM_RESULT vm_graphic_get_image_file_property(VMWSTR file_name, vm_graphic_image_property_t* image_property);
 
-#ifdef _cplusplus
+#ifdef __cplusplus
 }
 #endif
 #endif /* VMGRAPHIC_IMAGE_SDK_H */

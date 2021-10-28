@@ -324,15 +324,6 @@ VMINT vm_pmng_get_process_list(VM_PROCESS_HANDLE* handle_list, VMUINT* number);
  *****************************************************************************/
 VM_RESULT vm_pmng_get_process_property(VM_PROCESS_HANDLE handle,
                                        vm_process_property_t* property);
-									   
-									   
-/*****************************************************************************
-* FUNCTION
-*    vm_main
-* DESCRIPTION
-*  This is entry function of application and application must implement it.
-*****************************************************************************/
-void vm_main(void);
 
 #ifdef __cplusplus
 }

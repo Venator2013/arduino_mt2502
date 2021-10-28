@@ -17,77 +17,76 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
   Modified 20 Aug 2014 by MediaTek Inc.
-  
+
 */
 
 #define ARDUINO_MAIN
 #include "Arduino.h"
-#include "vmsystem.h"
-#include "vmthread.h"
 #include "vmfirmware.h"
-#include "vmmemory.h"
-#include "vmlog.h"
 #include "vmgsm_cell.h"
 #include "vmgsm_tel.h"
+#include "vmlog.h"
+#include "vmmemory.h"
+#include "vmsystem.h"
+#include "vmthread.h"
 
-
-typedef VMINT (*vm_get_sym_entry_t)(char* symbol);
+typedef VMINT (*vm_get_sym_entry_t)(char *symbol);
 extern vm_get_sym_entry_t vm_get_sym_entry;
 
 extern "C" void vm_thread_change_priority(VM_THREAD_HANDLE thread_handle, VMUINT32 new_priority);
 
-unsigned char* spi_w_data = NULL;
-unsigned char* spi_r_data = NULL;
-unsigned char* spi_data_memory = NULL;
+unsigned char *spi_w_data = NULL;
+unsigned char *spi_r_data = NULL;
+unsigned char *spi_data_memory = NULL;
 vm_gsm_tel_call_listener_callback g_call_status_callback = NULL;
 
-void __handle_sysevt(VMINT message, VMINT param) 
+void __handle_sysevt(VMINT message, VMINT param)
 {
-    if(message == VM_MSG_ARDUINO_CALL)
-    {
-    	 msg_struct* pMsg = (msg_struct*)param;
-    	 if(pMsg->remote_func(pMsg->userdata))
-        {
-        	vm_signal_post(pMsg->signal);
-    	 }
-        return ;
-    }
+	if (message == VM_MSG_ARDUINO_CALL)
+	{
+		msg_struct *pMsg = (msg_struct *)param;
+		if (pMsg->remote_func(pMsg->userdata))
+		{
+			vm_signal_post(pMsg->signal);
+		}
+		return;
+	}
 }
 
-void __call_listener_func(vm_gsm_tel_call_listener_data_t* data)
+void __call_listener_func(vm_gsm_tel_call_listener_data_t *data)
 {
-	if(g_call_status_callback)
+	if (g_call_status_callback)
 	{
 		g_call_status_callback(data);
 	}
 }
 
-VMINT32 __arduino_thread(VM_THREAD_HANDLE thread_handle, void* user_data)
+VMINT32 __arduino_thread(VM_THREAD_HANDLE thread_handle, void *user_data)
 {
-	//init();
+	init();
 	delay(1);
 	setup();
 	for (;;)
 	{
 		loop();
-		if (serialEventRun) serialEventRun();
+		if (serialEventRun)
+			serialEventRun();
 	}
 }
 
-void vm_main( void )
+void vm_main(void)
 {
 	VM_THREAD_HANDLE handle;
-	
-	spi_w_data = (unsigned char*)vm_malloc(2);
-	spi_r_data = (unsigned char*)vm_malloc(2);
+
+	spi_w_data = (unsigned char *)vm_malloc(2);
+	spi_r_data = (unsigned char *)vm_malloc(2);
 	srand(0);
 	rand();
-	spi_data_memory = (unsigned char*)vm_malloc(64*1024);
-	memset(spi_data_memory,0, 64*1024);
-	
-	vm_pmng_register_system_event_callback(__handle_sysevt);	
+	spi_data_memory = (unsigned char *)vm_malloc(64 * 1024);
+	memset(spi_data_memory, 0, 64 * 1024);
+
+	vm_pmng_register_system_event_callback(__handle_sysevt);
 	vm_gsm_tel_call_reg_listener(__call_listener_func);
 	handle = vm_thread_create(__arduino_thread, NULL, 0);
 	vm_thread_change_priority(handle, 245);
 }
-
