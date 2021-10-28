@@ -19,8 +19,8 @@
 
 */
 
-#ifndef _VARIANT_ARDUINO_DUE_X_
-#define _VARIANT_ARDUINO_DUE_X_
+#ifndef _VARIANT_REPHONE_
+#define _VARIANT_REPHONE_
 
 /*----------------------------------------------------------------------------
  *        Definitions
@@ -124,4 +124,4 @@ static const uint8_t SCK = PIN_SPI_SCK;
  *        Arduino objects - C++ only
  *----------------------------------------------------------------------------*/
 
-#endif /* _VARIANT_ARDUINO_DUE_X_ */
+#endif /* _VARIANT_REPHONE_ */
