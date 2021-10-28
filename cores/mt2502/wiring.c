@@ -20,74 +20,77 @@
 
 #include "Arduino.h"
 
+#include "vmdatetime.h"
+
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-boolean no_interrupt = 1;
+    boolean no_interrupt = 1;
 
-uint32_t millis( void )
-{
-// todo: ensure no interrupts
-    return vm_time_ust_get_count() / 1000;
-}
-
-// Interrupt-compatible version of micros
-// Theory: repeatedly take readings of SysTick counter, millis counter and SysTick interrupt pending flag.
-// When it appears that millis counter and pending is stable and SysTick hasn't rolled over, use these 
-// values to calculate micros. If there is a pending SysTick, add one to the millis counter in the calculation.
-uint32_t micros( void )
-{
-	return vm_time_ust_get_count(); 
-}
-
-// original function:
-// uint32_t micros( void )
-// {
-//     uint32_t ticks ;
-//     uint32_t count ;
-// 
-//     SysTick->CTRL;
-//     do {
-//         ticks = SysTick->VAL;
-//         count = GetTickCount();
-//     } while (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk);
-// 
-//     return count * 1000 + (SysTick->LOAD + 1 - ticks) / (SystemCoreClock/1000000) ;
-// }
-
-
-void delay( uint32_t ms )
-{
-    vm_thread_sleep(ms);
-}
-
-void delayMicroseconds(uint32_t usec){
-   VMUINT32 timeStop; 
-   VMUINT32 timeStart; 
-   VMUINT32 Freq = 0; 
-    
-    timeStart = vm_time_ust_get_count(); 
-    while( Freq  < usec) 
-    { 
-        timeStop = vm_time_ust_get_count();
-        Freq = timeStop - timeStart + 1;
+    uint32_t millis(void)
+    {
+        // todo: ensure no interrupts
+        return vm_time_ust_get_count() / 1000;
     }
-}
-void interrupts(void)
-{
-    no_interrupt = 0;
-}
 
-void noInterrupts(void )
-{
-    no_interrupt = 1;
-}
+    // Interrupt-compatible version of micros
+    // Theory: repeatedly take readings of SysTick counter, millis counter and SysTick interrupt pending flag.
+    // When it appears that millis counter and pending is stable and SysTick hasn't rolled over, use these
+    // values to calculate micros. If there is a pending SysTick, add one to the millis counter in the calculation.
+    uint32_t micros(void)
+    {
+        return vm_time_ust_get_count();
+    }
 
-boolean noStopInterrupts(void)
-{
-	return no_interrupt;
-}
+    // original function:
+    // uint32_t micros( void )
+    // {
+    //     uint32_t ticks ;
+    //     uint32_t count ;
+    //
+    //     SysTick->CTRL;
+    //     do {
+    //         ticks = SysTick->VAL;
+    //         count = GetTickCount();
+    //     } while (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk);
+    //
+    //     return count * 1000 + (SysTick->LOAD + 1 - ticks) / (SystemCoreClock/1000000) ;
+    // }
+
+    void delay(uint32_t ms)
+    {
+        vm_thread_sleep(ms);
+    }
+
+    void delayMicroseconds(uint32_t usec)
+    {
+        VMUINT32 timeStop;
+        VMUINT32 timeStart;
+        VMUINT32 Freq = 0;
+
+        timeStart = vm_time_ust_get_count();
+        while (Freq < usec)
+        {
+            timeStop = vm_time_ust_get_count();
+            Freq = timeStop - timeStart + 1;
+        }
+    }
+    void interrupts(void)
+    {
+        no_interrupt = 0;
+    }
+
+    void noInterrupts(void)
+    {
+        no_interrupt = 1;
+    }
+
+    boolean noStopInterrupts(void)
+    {
+        return no_interrupt;
+    }
 
 #ifdef __cplusplus
 }
