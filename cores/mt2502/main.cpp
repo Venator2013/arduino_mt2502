@@ -63,7 +63,7 @@ void __call_listener_func(vm_gsm_tel_call_listener_data_t *data)
 
 VMINT32 __arduino_thread(VM_THREAD_HANDLE thread_handle, void *user_data)
 {
-	init();
+	//	init();
 	delay(1);
 	setup();
 	for (;;)
