@@ -30,7 +30,7 @@ extern "C"
 	{
 		VM_DCL_HANDLE gpio_handle;
 		vm_dcl_gpio_control_set_register_status_r0_r1_t pupd;
-		// vm_log_info("pinMode(): pin = %d , pin_internal = %d, mode = %d", ulPin, g_APinDescription[ulPin].ulGpioId, ulMode);
+		vm_log_info("pinMode(): pin = %d , pin_internal = %d, mode = %d", ulPin, g_APinDescription[ulPin].ulGpioId, ulMode);
 
 		if (!changePinType(ulPin, PIO_DIGITAL, &gpio_handle))
 			return;
