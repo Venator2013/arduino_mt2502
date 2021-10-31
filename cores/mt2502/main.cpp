@@ -63,6 +63,7 @@ void __call_listener_func(vm_gsm_tel_call_listener_data_t *data)
 
 VMINT32 __arduino_thread(VM_THREAD_HANDLE thread_handle, void *user_data)
 {
+	vm_log_info("run arduino thread");
 	//	init();
 	delay(1);
 	setup();
@@ -77,7 +78,7 @@ VMINT32 __arduino_thread(VM_THREAD_HANDLE thread_handle, void *user_data)
 void vm_main(void)
 {
 	VM_THREAD_HANDLE handle;
-
+	vm_log_info("vm_main");
 	spi_w_data = (unsigned char *)vm_malloc(2);
 	spi_r_data = (unsigned char *)vm_malloc(2);
 	srand(0);
@@ -85,8 +86,11 @@ void vm_main(void)
 	spi_data_memory = (unsigned char *)vm_malloc(64 * 1024);
 	memset(spi_data_memory, 0, 64 * 1024);
 
+	vm_log_info("register callbacks");
 	vm_pmng_register_system_event_callback(__handle_sysevt);
 	vm_gsm_tel_call_reg_listener(__call_listener_func);
 	handle = vm_thread_create(__arduino_thread, NULL, 0);
 	vm_thread_change_priority(handle, 245);
+
+	vm_log_info("vm_main finished");
 }
