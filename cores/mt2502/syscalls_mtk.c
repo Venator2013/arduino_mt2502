@@ -13,10 +13,11 @@
 typedef VMINT (*vm_get_sym_entry_t)(char *symbol);
 vm_get_sym_entry_t vm_get_sym_entry;
 
-static unsigned int g_memory_size = 1024;
-static void *g_base_address = NULL;
+#define RESERVED_MEMORY_SIZE 600 * 1024
 
-#define RESERVED_MEMORY_SIZE 500 * 1024
+static unsigned int g_memory_size = 200 * 1024;
+static unsigned int maxMem = 0;
+static char *g_base_address = NULL;
 
 int __g_errno = 0;
 
@@ -27,13 +28,13 @@ int *__errno()
 
 extern caddr_t _sbrk(int incr)
 {
-    static void *heap = NULL;
-    static void *base = NULL;
-    void *prev_heap;
+    static char *heap = NULL;
+    static char *base = NULL;
+    char *prev_heap;
 
     if (heap == NULL)
     {
-        base = (unsigned char *)g_base_address;
+        base = g_base_address;
         if (base == NULL)
         {
             vm_log_fatal("malloc failed");
@@ -48,11 +49,14 @@ extern caddr_t _sbrk(int incr)
     if (heap + incr > g_base_address + g_memory_size)
     {
         vm_log_fatal("memory not enough");
+        vm_pwr_reboot();
     }
 
     prev_heap = heap;
 
     heap += incr;
+    maxMem -= incr;
+    vm_log_info("heap reserved: %d bytes , %d bytes left", incr, maxMem);
 
     return (caddr_t)prev_heap;
 }
@@ -138,27 +142,29 @@ void __libc_init_array(void);
 
 void gcc_entry(unsigned int entry, unsigned int init_array_start, unsigned int count)
 {
-    unsigned int i;
     __init_array ptr;
-    unsigned int size = 0;
     vm_get_sym_entry = (vm_get_sym_entry_t)entry;
 
-    size = vm_pmng_get_total_heap_size();
+    unsigned int size = vm_pmng_get_total_heap_size();
 
-#if defined(__LINKIT_ONE__)
+    vm_log_info("max heap site %d , Reserved %d", vm_pmng_get_total_heap_size(), RESERVED_MEMORY_SIZE);
+
     if (size > RESERVED_MEMORY_SIZE)
     {
         g_memory_size = size - RESERVED_MEMORY_SIZE;
+        maxMem = g_memory_size;
     }
-#endif
 
     g_base_address = vm_malloc(g_memory_size);
+    vm_log_info("heap size allocated %d", g_memory_size);
 
     ptr = (__init_array)init_array_start;
-    for (i = 1; i < count; i++)
+    for (unsigned int i = 1; i < count; i++)
     {
         ptr[i]();
     }
+
+    vm_log_info("call vm_main");
     vm_main();
 }
 
@@ -225,7 +231,15 @@ static const VM_DCL_PIN_MUX pinTable[VM_DCL_PIN_TABLE_SIZE] = {
     {VM_PIN_P11, 0, 12, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_ADC, 0, 0, 0, 0, 0, 0, 0}},
     {VM_PIN_P12, 1, 15, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_ADC, 0, 0, 0, 0, 0, 0, 0}},
     {VM_PIN_P13, 2, 13, 0, {VM_DCL_PIN_MODE_GPIO, VM_DCL_PIN_MODE_EINT, VM_DCL_PIN_MODE_ADC, 0, 0, 0, 0, 0, 0, 0}},
-    {VM_PIN_P14, 23, 0, 0, {0, 0, VM_DCL_PIN_MODE_EINT, 0, 0, 0, 0, 0, 0, 0}}};
+    {VM_PIN_P14, 23, 0, 0, {0, 0, VM_DCL_PIN_MODE_EINT, 0, 0, 0, 0, 0, 0, 0}},
+    {VM_PIN_P15, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+    {VM_PIN_P16, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+    {VM_PIN_P17, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+    {VM_PIN_P18, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+    {VM_PIN_P19, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+    {VM_PIN_P20, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+    {VM_PIN_P21, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+    {VM_PIN_P22, 0, 0, 0, {VM_DCL_PIN_MODE_GPIO, 0, 0, 0, 0, 0, 0, 0, 0, 0}}};
 #else
 static const VM_DCL_PIN_MUX pinTable[VM_DCL_PIN_TABLE_SIZE] = {
     {VM_PIN_P0, 0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}};
