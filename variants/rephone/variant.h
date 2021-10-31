@@ -68,9 +68,9 @@ static const uint8_t GPIO35 = 37; /*digetal pin GPIO35*/
 static const uint8_t GPIO36 = 38; /*digetal pin GPIO36*/
 static const uint8_t GPIO37 = 39; /*digetal pin GPIO37*/
 
-static const uint8_t BLED_GPIO = 12; /*digetal pin GPIO37*/
-static const uint8_t GLED_GPIO = 15; /*digetal pin GPIO37*/
-static const uint8_t RLED_GPIO = 17; /*digetal pin GPIO37*/
+static const uint8_t BLED_GPIO = 16; /*digetal pin GPIO37*/
+static const uint8_t GLED_GPIO = 17; /*digetal pin GPIO37*/
+static const uint8_t RLED_GPIO = 18; /*digetal pin GPIO37*/
 
 #define GPIO_MAX 40
 
