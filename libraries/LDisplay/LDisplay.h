@@ -117,8 +117,6 @@ public:
 	 */
 	void draw_updata(void);
 
-	void draw_rect_buffer(uint8_t ulX1, uint8_t ulY1, uint8_t ulX2, uint8_t ulY2, const uint32_t *FCulValue);
-
 private:
 };
 

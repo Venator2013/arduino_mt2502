@@ -81,15 +81,4 @@ void LDisplayClass::draw_updata(void)
 	remoteCall(lcd_draw_updata, NULL);
 }
 
-void LDisplayClass::draw_rect_buffer(uint8_t ulX1, uint8_t ulY1, uint8_t ulX2, uint8_t ulY2, const uint32_t *FCulValue)
-{
-	rect_buffer_struct data;
-	data.ulX1 = ulX1;
-	data.ulY1 = ulY1;
-	data.ulX2 = ulX2;
-	data.ulY2 = ulY2;
-	data.FCulValue = FCulValue;
-	remoteCall(lcd_draw_rect_buffer, &data);
-}
-
 LDisplayClass Lcd;
