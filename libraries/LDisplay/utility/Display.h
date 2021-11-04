@@ -18,7 +18,6 @@ extern "C"
 	boolean lcd_draw_line(void *user_data);
 	boolean lcd_draw_fill_rectangle(void *user_data);
 	boolean lcd_draw_updata(void *user_data);
-	boolean lcd_draw_rect_buffer(void *user_data);
 
 	typedef struct
 	{
@@ -62,15 +61,6 @@ extern "C"
 		VMUINT8 ulY2;
 		VMUINT32 FCulValue;
 	} fill_info_struct;
-
-	typedef struct
-	{
-		VMUINT8 ulX1;
-		VMUINT8 ulY1;
-		VMUINT8 ulX2;
-		VMUINT8 ulY2;
-		VMUINT32 *PCulValue;
-	} rect_buffer_struct;
 
 #ifdef __cplusplus
 }

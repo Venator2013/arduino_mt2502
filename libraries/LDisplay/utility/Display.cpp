@@ -274,17 +274,3 @@ boolean lcd_draw_updata(void *user_data)
 	vm_graphic_blt_frame(g_frame_blt_group, frame_position, (VMINT)1);
 	return true;
 }
-
-boolean lcd_draw_rect_buffer(void *user_data)
-{
-	rect_buffer_struct *data = (rect_buffer_struct *)user_data;
-
-	VMUINT16 *pbuf = (VMUINT16 *)g_frame.buffer;
-	pbuf += data->ulY * 240 + data->ulX;
-	*pbuf = ((data->PCulValue >> 8) & (0x1F << 11)) | ((data->PCulValue >> 5) & (0x3F << 5)) | ((data->PCulValue >> 3) & 0x1F);
-
-	vm_graphic_rotate_frame(&g_rotated_frame, &g_frame, VM_GRAPHIC_ROTATE_180);
-	// vm_graphic_blt_frame(g_frame_blt_group, frame_position, (VMINT)1);
-
-	return true;
-}
