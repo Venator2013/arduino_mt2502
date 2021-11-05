@@ -19,37 +19,28 @@
 #include "vmsystem.h"
 #include "vmthread.h"
 
-#ifdef __cplusplus
-extern "C"
+class _LTaskClass
 {
-#endif
+private:
+	vm_mutex_t m_mutex;
+	msg_struct m_msg;
+	VM_THREAD_HANDLE m_handle;
+	VM_SIGNAL_ID m_signal;
+	void sendMsg(VMUINT32 msg_id, void *user_data_temp);
 
-	class _LTaskClass
-	{
-	private:
-		vm_mutex_t m_mutex;
-		msg_struct m_msg;
-		VM_THREAD_HANDLE m_handle;
-		VM_SIGNAL_ID m_signal;
-		void sendMsg(VMUINT32 msg_id, void *user_data_temp);
+public:
+	_LTaskClass();
 
-	public:
-		_LTaskClass();
+	void begin(void);
+	void mutexLock();
+	void mutexUnlock();
+	void stop(void);
+	void remoteCall(remote_call_ptr func, void *userdata);
 
-		void begin(void);
-		void mutexLock();
-		void mutexUnlock();
-		void stop(void);
-		void remoteCall(remote_call_ptr func, void *userdata);
+public:
+	void post_signal();
+};
 
-	public:
-		void post_signal();
-	};
-
-	extern _LTaskClass LTask;
-
-#ifdef __cplusplus
-}
-#endif
+extern _LTaskClass LTask;
 
 #endif
