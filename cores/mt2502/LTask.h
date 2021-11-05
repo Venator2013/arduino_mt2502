@@ -8,41 +8,48 @@
 
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    See the GNU Lesser General Public License for more details.
 */
 
 #ifndef _LTaskClass_h
 #define _LTaskClass_h
 
+#include "message.h"
 #include "vmsystem.h"
 #include "vmthread.h"
-#include "message.h"
 
-class _LTaskClass
+#ifdef __cplusplus
+extern "C"
 {
-private:
-	vm_mutex_t m_mutex;
-	msg_struct m_msg;
-	VM_THREAD_HANDLE m_handle;
-    VM_SIGNAL_ID m_signal;
-	void sendMsg(VMUINT32 msg_id, void* user_data_temp);
-
-public:
-	_LTaskClass();
-	
-	void begin(void);
-	void mutexLock();
-	void mutexUnlock();
-	void stop(void);
-	void remoteCall(remote_call_ptr func,  void* userdata);
-
-public:
-	void post_signal();
-
-};
-
-extern _LTaskClass LTask;
-
 #endif
 
+	class _LTaskClass
+	{
+	private:
+		vm_mutex_t m_mutex;
+		msg_struct m_msg;
+		VM_THREAD_HANDLE m_handle;
+		VM_SIGNAL_ID m_signal;
+		void sendMsg(VMUINT32 msg_id, void *user_data_temp);
+
+	public:
+		_LTaskClass();
+
+		void begin(void);
+		void mutexLock();
+		void mutexUnlock();
+		void stop(void);
+		void remoteCall(remote_call_ptr func, void *userdata);
+
+	public:
+		void post_signal();
+	};
+
+	extern _LTaskClass LTask;
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
