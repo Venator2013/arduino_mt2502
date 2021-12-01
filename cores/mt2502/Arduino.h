@@ -53,8 +53,6 @@ extern "C"
   extern void create(void);
   extern void paint(void);
 
-  extern void init_main_thread(void);
-
   extern boolean changePinType(uint32_t ulPin, uint32_t ulPinType, VM_DCL_HANDLE *handle);
   extern void spiPinsRest(void);
   extern void setPinHandle(uint32_t ulPin, VM_DCL_HANDLE handle);

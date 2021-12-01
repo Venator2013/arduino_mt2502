@@ -89,7 +89,6 @@ void vm_main(void)
 	vm_log_info("register callbacks");
 	vm_pmng_register_system_event_callback(__handle_sysevt);
 	vm_gsm_tel_call_reg_listener(__call_listener_func);
-	init_main_thread();
 
 	handle = vm_thread_create(__arduino_thread, NULL, 0);
 	vm_log_info("handle %d", handle);
