@@ -91,22 +91,22 @@ static boolean _conv_path_back(const VMWCHAR *filepath, char *filepath_buf)
     return true;
 }
 
-VMFILE linkit_file_open(const VMWSTR filename, VMUINT mode)
+VM_FS_HANDLE linkit_file_open(const VMWSTR filename, VMUINT mode)
 {
     if (mode == FILE_READ)
     {
-        return vm_fs_open(filename, MODE_READ, TRUE);
+        return vm_fs_open(filename, VM_FS_MODE_READ, TRUE);
     }
     else if (mode == FILE_WRITE)
     {
         if (vm_fs_get_attributes(filename) < 0)
         {
-            return vm_fs_open(filename, MODE_CREATE_ALWAYS_WRITE, TRUE);
+            return vm_fs_open(filename, VM_FS_MODE_CREATE_ALWAYS_WRITE, TRUE);
         }
         else
         {
-            VMFILE fd = vm_fs_open(filename, MODE_WRITE, TRUE);
-            vm_fs_seek(fd, 0, BASE_END);
+            VM_FS_HANDLE fd = vm_fs_open(filename, VM_FS_MODE_WRITE, TRUE);
+            vm_fs_seek(fd, 0, VM_FS_BASE_BEGINNING);
             return fd;
         }
     }
@@ -475,7 +475,7 @@ boolean linkit_file_read_handler(void *userdata)
     if (data->peek_mode)
     {
         // peek mode, rewind back
-        vm_fs_seek(HDL(data->fd), -read, BASE_CURR);
+        vm_fs_seek(HDL(data->fd), -read, VM_FS_BASE_CURRENT);
     }
 
     return true;
@@ -485,7 +485,7 @@ boolean linkit_file_seek_handler(void *userdata)
 {
     linkit_file_seek_struct *data = (linkit_file_seek_struct *)userdata;
 
-    data->result = vm_fs_seek(HDL(data->fd), data->pos, BASE_BEGIN);
+    data->result = vm_fs_seek(HDL(data->fd), data->pos, VM_FS_BASE_BEGINNING);
 
     return true;
 }
@@ -509,7 +509,7 @@ boolean linkit_file_size_handler(void *userdata)
     linkit_file_general_struct *data = (linkit_file_general_struct *)userdata;
     VMUINT size;
 
-    data->result = vm_fs_getfilesize(HDL(data->fd), &size);
+    data->result = vm_fs_get_size(HDL(data->fd), &size);
     if (data->result == 0)
         data->value = size;
     else
@@ -539,12 +539,12 @@ boolean linkit_file_available_handler(void *userdata)
     linkit_file_general_struct *data = (linkit_file_general_struct *)userdata;
 
     VMUINT size = 0;
-    VMINT pos = 0;
+    VMUINT pos = 0;
 
-    vm_fs_getfilesize(HDL(data->fd), &size);
-    pos = vm_fs_tell(HDL(data->fd));
+    vm_fs_get_size(HDL(data->fd), &size);
+    VMINT result = vm_fs_get_position(HDL(data->fd), &pos);
 
-    if (!size || pos < 0)
+    if (!size || result < 0)
     {
         data->result = pos;
     }
@@ -567,7 +567,7 @@ boolean linkit_file_flush_handler(void *userdata)
         vm_fs_write(HDL(data->fd), data->buf, data->nbyte, &written);
     }
 
-    data->result = vm_fs_commit(HDL(data->fd));
+    data->result = vm_fs_flush(HDL(data->fd));
 
     return true;
 }
@@ -576,7 +576,7 @@ boolean linkit_file_find_handler(void *userdata)
 {
     linkit_file_find_struct *data = (linkit_file_find_struct *)userdata;
     VMWCHAR filepath_buf[LS_MAX_PATH_LEN];
-    vm_fileinfo_t info;
+    vm_fs_info_t info;
     VMINT attr;
     VMINT findhdl;
 
@@ -585,7 +585,7 @@ boolean linkit_file_find_handler(void *userdata)
     if (!_conv_path(data->drv, data->findpath, filepath_buf))
         return true;
 
-    int len = vm_wstrlen(filepath_buf);
+    int len = vm_wstr_string_length(filepath_buf);
     if (filepath_buf[len - 1] != '\\')
     {
         filepath_buf[len] = '\\';
@@ -631,10 +631,10 @@ boolean linkit_file_find_handler(void *userdata)
             return true;
     }
 
-    vm_wstrcpy(filepath_buf + len, info.filename);
+    vm_wstr_copy(filepath_buf + len, info.filename);
 
     attr = vm_fs_get_attributes(filepath_buf);
-    if (attr >= 0 && attr & VM_FS_ATTR_DIR)
+    if (attr >= 0 && attr & VM_FS_ATTRIBUTE_DIRECTORY)
     {
         LSLOG("[find]dir");
         data->is_dir = true;
@@ -828,7 +828,7 @@ boolean linkit_drv_read_handler(void *userdata)
     // identify if this is a file or dir
     attr = vm_fs_get_attributes(filepath_buf);
 
-    if (attr >= 0 && attr & VM_FS_ATTR_DIR)
+    if (attr >= 0 && attr & VM_FS_ATTRIBUTE_DIRECTORY)
     {
         data->is_dir = true;
         data->fd = 0;
