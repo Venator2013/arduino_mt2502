@@ -141,8 +141,8 @@ boolean linkit_file_position_handler(void *userdata)
     VMUINT pos;
 
     VMUINT pos = 0;
-    VMINT result = vm_fs_get_position(HDL(data->fd), &pos);
-    if (data->result == 0)
+    data->result = vm_fs_get_position(HDL(data->fd), &pos);
+    if (VM_IS_SUCCEEDED(data->result))
         data->value = pos;
     else
         data->value = 0;
@@ -258,7 +258,7 @@ boolean linkit_file_find_handler(void *userdata)
                (info.filename[0] == '.' && info.filename[1] == '.' && info.filename[2] == 0))
         {
             data->result = vm_fs_find_next(findhdl, &info);
-            if (data->result < 0)
+            if (VM_IS_FAILED(data->result))
             {
                 vm_fs_find_close(findhdl);
                 return true;
@@ -273,7 +273,7 @@ boolean linkit_file_find_handler(void *userdata)
     {
         findhdl = HDL(data->findhdl);
         data->result = vm_fs_find_next(findhdl, &info);
-        if (data->result < 0)
+        if (VM_IS_FAILED(data->result))
             return true;
     }
 
