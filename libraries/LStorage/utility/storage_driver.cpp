@@ -138,8 +138,6 @@ boolean linkit_file_seek_handler(void *userdata)
 boolean linkit_file_position_handler(void *userdata)
 {
     linkit_file_general_struct *data = (linkit_file_general_struct *)userdata;
-    VMUINT pos;
-
     VMUINT pos = 0;
     data->result = vm_fs_get_position(HDL(data->fd), &pos);
     if (VM_IS_SUCCEEDED(data->result))
