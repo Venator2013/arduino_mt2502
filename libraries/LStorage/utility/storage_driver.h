@@ -7,6 +7,8 @@ extern "C"
 {
 #endif
 
+#include "vmfs.h"
+
 #ifndef FILE_READ
 #define FILE_READ 0x01
 #endif
