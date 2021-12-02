@@ -1,7 +1,7 @@
 
 
 #include "Arduino.h"
-#include "vmfs.h"
+
 #include "vmchset.h"
 #include "vmstdlib.h"
 #include "storage_driver.h"
@@ -140,9 +140,9 @@ boolean linkit_file_position_handler(void *userdata)
     linkit_file_general_struct *data = (linkit_file_general_struct *)userdata;
     VMUINT pos;
 
-    data->result = vm_fs_get_position(HDL(data->fd), &pos);
-
-    if (VM_IS_SUCCEEDED(data->result))
+    VMUINT pos = 0;
+    VMINT result = vm_fs_get_position(HDL(data->fd), &pos);
+    if (data->result == 0)
         data->value = pos;
     else
         data->value = 0;
