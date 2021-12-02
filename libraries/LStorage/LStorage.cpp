@@ -12,9 +12,9 @@
    See the GNU Lesser General Public License for more details.
 */
 
-#include "LStorage.h"
-
+#include "Arduino.h"
 #include "storage_driver.h"
+#include "LStorage.h"
 
 /*****************************************************************************
  *
