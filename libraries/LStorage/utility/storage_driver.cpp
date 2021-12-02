@@ -87,7 +87,9 @@ VM_FS_HANDLE linkit_file_open(const VMWSTR filename, VMUINT mode)
     }
     else if (mode == FILE_WRITE)
     {
-        if (vm_fs_get_attributes(filename) < 0)
+        VM_FS_ATTRIBUTE attr;
+        VM_RESULT result = vm_fs_get_attributes(filename, &attr);
+        if (VM_IS_SUCCEEDED(result))
         {
             return vm_fs_open(filename, VM_FS_MODE_CREATE_ALWAYS_WRITE, TRUE);
         }
@@ -136,11 +138,12 @@ boolean linkit_file_seek_handler(void *userdata)
 boolean linkit_file_position_handler(void *userdata)
 {
     linkit_file_general_struct *data = (linkit_file_general_struct *)userdata;
+    VMUINT pos;
 
-    data->result = vm_fs_tell(HDL(data->fd));
+    data->result = vm_fs_get_position(HDL(data->fd), &pos);
 
-    if (data->result >= 0)
-        data->value = data->result;
+    if (VM_IS_SUCCEEDED(data->result))
+        data->value = pos;
     else
         data->value = 0;
 
@@ -153,7 +156,7 @@ boolean linkit_file_size_handler(void *userdata)
     VMUINT size;
 
     data->result = vm_fs_get_size(HDL(data->fd), &size);
-    if (data->result == 0)
+    if (VM_IS_SUCCEEDED(data->result))
         data->value = size;
     else
         data->value = 0;
@@ -220,7 +223,7 @@ boolean linkit_file_find_handler(void *userdata)
     linkit_file_find_struct *data = (linkit_file_find_struct *)userdata;
     VMWCHAR filepath_buf[VM_FS_MAX_PATH_LENGTH];
     vm_fs_info_t info;
-    VMINT attr;
+    VM_FS_ATTRIBUTE attr;
     VMINT findhdl;
 
     data->result = -1;
@@ -276,15 +279,15 @@ boolean linkit_file_find_handler(void *userdata)
 
     vm_wstr_copy(filepath_buf + len, info.filename);
 
-    attr = vm_fs_get_attributes(filepath_buf);
-    if (attr >= 0 && attr & VM_FS_ATTRIBUTE_DIRECTORY)
+    VM_RESULT result = vm_fs_get_attributes(filepath_buf, &attr);
+    if (VM_IS_SUCCEEDED(result) && attr & VM_FS_ATTRIBUTE_DIRECTORY)
     {
         LSLOG("[find]dir");
         data->is_dir = true;
         data->result = 0;
         data->fd = 0;
     }
-    else if (attr < 0) // special case for SD label entry
+    else if (VM_IS_FAILED(result)) // special case for SD label entry
     {
 #ifdef LINKITSTORAGE_DEBUG
         Serial.print("[find]SD label?:");
@@ -346,12 +349,13 @@ boolean linkit_file_find_close_handler(void *userdata)
 
 static int recur_mkdir(VMWCHAR *path)
 {
-    int result;
+    VM_RESULT result;
     VMWCHAR *pos;
+    VM_FS_ATTRIBUTE attr;
 
     // check if already exist
-    result = vm_fs_get_attributes(path);
-    if (result >= 0)
+    result = vm_fs_get_attributes(path, &attr);
+    if (VM_IS_SUCCEEDED(result))
         return -1; // already exist
 
     pos = path + 3;
@@ -368,8 +372,8 @@ static int recur_mkdir(VMWCHAR *path)
     vm_fs_create_directory(path);
 
     // check if final path exist
-    result = vm_fs_get_attributes(path);
-    if (result >= 0)
+    result = vm_fs_get_attributes(path, &attr);
+    if (VM_IS_SUCCEEDED(result))
         result = 0; // succeed
 
     return result;
@@ -379,7 +383,7 @@ boolean linkit_drv_general_handler(void *userdata)
 {
     linkit_drv_general_op_struct *data = (linkit_drv_general_op_struct *)userdata;
     VMWCHAR filepath_buf[VM_FS_MAX_PATH_LENGTH];
-    int result;
+    VM_RESULT result;
 
     data->result = false;
 
@@ -389,7 +393,8 @@ boolean linkit_drv_general_handler(void *userdata)
     switch (data->op)
     {
     case 1: // exists
-        result = vm_fs_get_attributes(filepath_buf);
+        VM_FS_ATTRIBUTE attr;
+        result = vm_fs_get_attributes(filepath_buf, &attr);
         break;
 
     case 2: // mkdir
@@ -420,7 +425,7 @@ boolean linkit_drv_read_handler(void *userdata)
 {
     linkit_drv_open_struct *data = (linkit_drv_open_struct *)userdata;
     VMWCHAR filepath_buf[VM_FS_MAX_PATH_LENGTH];
-    VMINT attr;
+    VM_FS_ATTRIBUTE attr;
     VMINT fd;
 
     data->result = false;
@@ -431,9 +436,9 @@ boolean linkit_drv_read_handler(void *userdata)
     }
 
     // identify if this is a file or dir
-    attr = vm_fs_get_attributes(filepath_buf);
+    VM_RESULT result = vm_fs_get_attributes(filepath_buf, &attr);
 
-    if (attr >= 0 && attr & VM_FS_ATTRIBUTE_DIRECTORY)
+    if (VM_IS_SUCCEEDED(result) && attr & VM_FS_ATTRIBUTE_DIRECTORY)
     {
         data->is_dir = true;
         data->fd = 0;
