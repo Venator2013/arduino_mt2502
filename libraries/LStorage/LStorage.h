@@ -17,7 +17,6 @@
 
 #include <Arduino.h>
 #include "LTask.h"
-#include "storage_driver.h"
 
 // Class of LinkIt File support
 class LFile : public Stream
