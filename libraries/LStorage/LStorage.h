@@ -17,6 +17,9 @@
 
 #include <Arduino.h>
 #include "LTask.h"
+#include "vmfs.h"
+
+#define LS_WRITE_BUF_SIZE 128
 
 // Class of LinkIt File support
 class LFile : public Stream
@@ -151,7 +154,7 @@ private:
 
 private:
     unsigned int _fd;
-    char _name[LS_MAX_PATH_LEN];
+    char _name[VM_FS_MAX_PATH_LENGTH];
     boolean _isDir;
     char _drv;
 

@@ -36,7 +36,7 @@ LFile::LFile(unsigned int fd, boolean isdir, char drv, const char *name)
     _fd = fd;
     _isDir = isdir;
     _drv = drv;
-    strncpy(_name, name, LS_MAX_PATH_LEN);
+    strncpy(_name, name, VM_FS_MAX_PATH_LENGTH);
     _bufPos = 0;
 }
 

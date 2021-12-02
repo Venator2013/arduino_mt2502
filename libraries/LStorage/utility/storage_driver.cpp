@@ -29,14 +29,14 @@ static boolean _conv_path(char drv, const char *filepath, VMWCHAR *filepath_buf)
 {
     int i;
 
-    memset(filepath_buf, 0, (LS_MAX_PATH_LEN) * sizeof(VMWCHAR));
+    memset(filepath_buf, 0, (VM_FS_MAX_PATH_LENGTH) * sizeof(VMWCHAR));
 
     filepath_buf[i++] = drv;
     filepath_buf[i++] = ':';
     if (filepath[0] != '/')
         filepath_buf[i++] = '/';
 
-    if (vm_chset_ascii_to_ucs2(filepath_buf + i, (LS_MAX_PATH_LEN - i) * sizeof(VMWCHAR), (char *)filepath) < 0)
+    if (vm_chset_ascii_to_ucs2(filepath_buf + i, (VM_FS_MAX_PATH_LENGTH - i) * sizeof(VMWCHAR), (char *)filepath) < 0)
         return false;
 
     i = 0;
@@ -59,9 +59,9 @@ static boolean _conv_path_back(const VMWCHAR *filepath, char *filepath_buf)
 {
     int i = 0;
 
-    memset(filepath_buf, 0, (LS_MAX_PATH_LEN) * sizeof(char));
+    memset(filepath_buf, 0, (VM_FS_MAX_PATH_LENGTH) * sizeof(char));
 
-    if (vm_chset_ucs2_to_ascii(filepath_buf, (LS_MAX_PATH_LEN) * sizeof(char), (VMWCHAR *)filepath + 2) < 0)
+    if (vm_chset_ucs2_to_ascii(filepath_buf, (VM_FS_MAX_PATH_LENGTH) * sizeof(char), (VMWCHAR *)filepath + 2) < 0)
         return false;
 
     while (filepath_buf[i])
@@ -419,7 +419,7 @@ boolean linkit_drv_general_handler(void *userdata)
 boolean linkit_drv_read_handler(void *userdata)
 {
     linkit_drv_open_struct *data = (linkit_drv_open_struct *)userdata;
-    VMWCHAR filepath_buf[LS_MAX_PATH_LEN];
+    VMWCHAR filepath_buf[VM_FS_MAX_PATH_LENGTH];
     VMINT attr;
     VMINT fd;
 

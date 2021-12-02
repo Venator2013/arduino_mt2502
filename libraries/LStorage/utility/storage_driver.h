@@ -7,8 +7,7 @@ extern "C"
 {
 #endif
 
-#define LS_WRITE_BUF_SIZE 128
-#define LS_MAX_PATH_LEN 260
+
 
 #ifndef FILE_READ
 #define FILE_READ 0x01
@@ -65,7 +64,7 @@ extern "C"
         uint8_t is_dir;
         VMUINT fd;
         VMINT result; // 0: ok, <0: error
-        char name[LS_MAX_PATH_LEN];
+        char name[VM_FS_MAX_PATH_LENGTH];
     };
 
     boolean linkit_file_read_handler(void *userdata);
