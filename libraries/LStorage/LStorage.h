@@ -252,12 +252,5 @@ private:
     char _drv;
 };
 
-#undef LINKITSTORAGE_DEBUG
-
-#ifdef LINKITSTORAGE_DEBUG
-#define LSLOG(x) Serial.println(x)
-#else
-#define LSLOG(x)
-#endif
 
 #endif

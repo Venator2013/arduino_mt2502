@@ -218,7 +218,7 @@ boolean linkit_file_flush_handler(void *userdata)
 boolean linkit_file_find_handler(void *userdata)
 {
     linkit_file_find_struct *data = (linkit_file_find_struct *)userdata;
-    VMWCHAR filepath_buf[LS_MAX_PATH_LEN];
+    VMWCHAR filepath_buf[VM_FS_MAX_PATH_LENGTH];
     vm_fs_info_t info;
     VMINT attr;
     VMINT findhdl;
@@ -378,7 +378,7 @@ static int recur_mkdir(VMWCHAR *path)
 boolean linkit_drv_general_handler(void *userdata)
 {
     linkit_drv_general_op_struct *data = (linkit_drv_general_op_struct *)userdata;
-    VMWCHAR filepath_buf[LS_MAX_PATH_LEN];
+    VMWCHAR filepath_buf[VM_FS_MAX_PATH_LENGTH];
     int result;
 
     data->result = false;

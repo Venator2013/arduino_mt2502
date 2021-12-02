@@ -7,8 +7,6 @@ extern "C"
 {
 #endif
 
-
-
 #ifndef FILE_READ
 #define FILE_READ 0x01
 #endif
@@ -106,6 +104,14 @@ extern "C"
 
 #define HDL(fd) ((linkit_file_handle_struct *)fd)->_hdl
 #define REF(fd) ((linkit_file_handle_struct *)fd)->_ref
+
+#undef LINKITSTORAGE_DEBUG
+
+#ifdef LINKITSTORAGE_DEBUG
+#define LSLOG(x) Serial.println(x)
+#else
+#define LSLOG(x)
+#endif
 
 #ifdef __cplusplus
 }
