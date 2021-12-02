@@ -21,6 +21,14 @@
 
 #define LS_WRITE_BUF_SIZE 128
 
+#ifndef FILE_READ
+#define FILE_READ 0x01
+#endif
+
+#ifndef FILE_WRITE
+#define FILE_WRITE 0x13
+#endif
+
 // Class of LinkIt File support
 class LFile : public Stream
 {
@@ -251,6 +259,5 @@ private:
 private:
     char _drv;
 };
-
 
 #endif
