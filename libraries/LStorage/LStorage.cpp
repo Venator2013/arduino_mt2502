@@ -245,7 +245,7 @@ LFile LFile::openNextFile(uint8_t mode)
 
     data.mode = mode;
     data.drv = _drv;
-    data.findpath = _name;
+    data.findpath = (signed char *)&_name;
     data.findhdl = _fd;
 
     LTask.remoteCall(linkit_file_find_handler, &data);
@@ -257,7 +257,7 @@ LFile LFile::openNextFile(uint8_t mode)
         return LFile();
     }
 
-    return LFile(data.fd, data.is_dir, _drv, data.name);
+    return LFile(data.fd, data.is_dir, _drv, (char *)data.name);
 }
 
 void LFile::rewindDirectory(void)
@@ -281,7 +281,7 @@ boolean LDrive::general_op(int op, char *filepath)
 {
     linkit_drv_general_op_struct data;
 
-    data.filepath = filepath;
+    data.filepath = (signed char *)filepath;
     data.op = op;
     data.drv = _drv;
 
@@ -294,7 +294,7 @@ LFile LDrive::open(const char *filename, uint8_t mode)
 {
     linkit_drv_open_struct data;
 
-    data.filepath = filename;
+    data.filepath = (const signed char *)filename;
     data.mode = mode;
     data.drv = _drv;
 

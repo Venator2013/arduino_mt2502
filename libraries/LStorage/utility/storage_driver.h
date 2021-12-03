@@ -26,7 +26,7 @@ extern "C"
     struct linkit_file_general_struct
     {
         VMUINT fd;
-        VMINT result;
+        VM_RESULT result;
         VMUINT value;
     };
 
@@ -41,7 +41,7 @@ extern "C"
     struct linkit_file_read_struct
     {
         VMUINT fd;
-        VMINT result;
+        VM_RESULT result;
         void *buf;
         VMUINT nbyte;
         boolean peek_mode;
@@ -50,21 +50,21 @@ extern "C"
     struct linkit_file_seek_struct
     {
         VMUINT fd;
-        VMINT result;
+        VM_RESULT result;
         VMINT pos;
     };
 
     struct linkit_file_find_struct
     {
         VMUINT findhdl;
-        char *findpath;
+        VMSTR findpath;
         VMWCHAR drv;
         uint8_t mode;
 
         uint8_t is_dir;
         VMUINT fd;
-        VMINT result; // 0: ok, <0: error
-        char name[VM_FS_MAX_PATH_LENGTH];
+        VM_RESULT result; // 0: ok, <0: error
+        VMCHAR name[VM_FS_MAX_PATH_LENGTH];
     };
 
     boolean linkit_file_read_handler(void *userdata);
@@ -79,7 +79,7 @@ extern "C"
 
     struct linkit_drv_general_op_struct
     {
-        const char *filepath;
+        VMCSTR filepath;
         VMINT op;
         VMINT result;
         VMWCHAR drv;
@@ -87,7 +87,7 @@ extern "C"
 
     struct linkit_drv_open_struct
     {
-        const char *filepath;
+        VMCSTR filepath;
         VMINT mode;
         VMINT result;
         VMUINT fd;
