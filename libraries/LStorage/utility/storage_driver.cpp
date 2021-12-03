@@ -25,7 +25,7 @@ static void _printwstr(VMWCHAR *filepath_buf)
 }
 #endif
 
-static boolean _conv_path(char drv, const char *filepath, VMWCHAR *filepath_buf)
+static boolean _conv_path(char drv, VMCSTR filepath, VMWSTR filepath_buf)
 {
     int i;
 
@@ -36,7 +36,7 @@ static boolean _conv_path(char drv, const char *filepath, VMWCHAR *filepath_buf)
     if (filepath[0] != '/')
         filepath_buf[i++] = '/';
 
-    if (vm_chset_ascii_to_ucs2(filepath_buf + i, (VM_FS_MAX_PATH_LENGTH - i) * sizeof(VMWCHAR), (char *)filepath) < 0)
+    if (vm_chset_ascii_to_ucs2(filepath_buf + i, (VM_FS_MAX_PATH_LENGTH - i) * sizeof(VMWCHAR), filepath) < 0)
         return false;
 
     i = 0;
@@ -55,13 +55,13 @@ static boolean _conv_path(char drv, const char *filepath, VMWCHAR *filepath_buf)
     return true;
 }
 
-static boolean _conv_path_back(const VMWCHAR *filepath, char *filepath_buf)
+static boolean _conv_path_back(VMCWSTR filepath, VMSTR filepath_buf)
 {
     int i = 0;
 
     memset(filepath_buf, 0, (VM_FS_MAX_PATH_LENGTH) * sizeof(char));
 
-    if (vm_chset_ucs2_to_ascii(filepath_buf, (VM_FS_MAX_PATH_LENGTH) * sizeof(char), (VMWCHAR *)filepath + 2) < 0)
+    if (vm_chset_ucs2_to_ascii(filepath_buf, (VM_FS_MAX_PATH_LENGTH) * sizeof(char), filepath + 2) < 0)
         return false;
 
     while (filepath_buf[i])
