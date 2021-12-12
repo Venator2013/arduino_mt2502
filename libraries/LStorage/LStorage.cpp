@@ -12,9 +12,10 @@
    See the GNU Lesser General Public License for more details.
 */
 
+#include "LStorage.h"
 #include "Arduino.h"
 #include "storage_driver.h"
-#include "LStorage.h"
+#include "vmlog.h"
 
 /*****************************************************************************
  *
@@ -297,6 +298,8 @@ LFile LDrive::open(const char *filename, uint8_t mode)
     data.filepath = (const signed char *)filename;
     data.mode = mode;
     data.drv = _drv;
+
+    vm_log_info("open file");
 
     LTask.remoteCall(linkit_drv_read_handler, &data);
 

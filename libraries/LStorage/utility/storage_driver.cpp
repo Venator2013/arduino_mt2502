@@ -2,9 +2,10 @@
 
 #include "Arduino.h"
 
-#include "vmchset.h"
-#include "vmstdlib.h"
 #include "storage_driver.h"
+#include "vmchset.h"
+#include "vmlog.h"
+#include "vmstdlib.h"
 
 /*****************************************************************************
  *
@@ -12,22 +13,9 @@
  *
  *****************************************************************************/
 
-#ifdef LINKITSTORAGE_DEBUG
-static void _printwstr(VMWCHAR *filepath_buf)
-{
-    int i = 0;
-    while (filepath_buf[i])
-    {
-        Serial.write(filepath_buf[i]);
-        i++;
-    }
-    Serial.println();
-}
-#endif
-
 static boolean _conv_path(char drv, VMCSTR filepath, VMWSTR filepath_buf)
 {
-    int i;
+    int i = 0;
 
     memset(filepath_buf, 0, (VM_FS_MAX_PATH_LENGTH) * sizeof(VMWCHAR));
 
@@ -36,7 +24,7 @@ static boolean _conv_path(char drv, VMCSTR filepath, VMWSTR filepath_buf)
     if (filepath[0] != '/')
         filepath_buf[i++] = '/';
 
-    if (vm_chset_ascii_to_ucs2(filepath_buf + i, (VM_FS_MAX_PATH_LENGTH - i) * sizeof(VMWCHAR), filepath) < 0)
+    if (VM_IS_FAILED(vm_chset_ascii_to_ucs2(filepath_buf + i, (VM_FS_MAX_PATH_LENGTH - i) * sizeof(VMWCHAR), filepath)))
         return false;
 
     i = 0;
@@ -48,8 +36,7 @@ static boolean _conv_path(char drv, VMCSTR filepath, VMWSTR filepath_buf)
     }
 
 #ifdef LINKITSTORAGE_DEBUG
-    Serial.print("[conv1]");
-    _printwstr(filepath_buf);
+    vm_log_info("[conv1] %s", filepath_buf);
 #endif
 
     return true;
@@ -61,7 +48,7 @@ static boolean _conv_path_back(VMCWSTR filepath, VMSTR filepath_buf)
 
     memset(filepath_buf, 0, (VM_FS_MAX_PATH_LENGTH) * sizeof(char));
 
-    if (vm_chset_ucs2_to_ascii(filepath_buf, (VM_FS_MAX_PATH_LENGTH) * sizeof(char), filepath + 2) < 0)
+    if (VM_IS_FAILED(vm_chset_ucs2_to_ascii(filepath_buf, (VM_FS_MAX_PATH_LENGTH) * sizeof(char), filepath + 2)))
         return false;
 
     while (filepath_buf[i])
@@ -72,8 +59,7 @@ static boolean _conv_path_back(VMCWSTR filepath, VMSTR filepath_buf)
     }
 
 #ifdef LINKITSTORAGE_DEBUG
-    Serial.print("[conv2]");
-    LSLOG(filepath_buf);
+    vm_log_info("[conv2] %s", filepath_buf);
 #endif
 
     return true;
@@ -243,8 +229,7 @@ boolean linkit_file_find_handler(void *userdata)
         filepath_buf[len + 1] = 0;
 
 #ifdef LINKITSTORAGE_DEBUG
-        Serial.print("[find]");
-        _printwstr(filepath_buf);
+        vm_log_info("[find] %s", filepath_buf);
 #endif
 
         findhdl = vm_fs_find_first(filepath_buf, &info);
@@ -288,8 +273,7 @@ boolean linkit_file_find_handler(void *userdata)
     else if (VM_IS_FAILED(result)) // special case for SD label entry
     {
 #ifdef LINKITSTORAGE_DEBUG
-        Serial.print("[find]SD label?:");
-        _printwstr(filepath_buf);
+        vm_log_info("[find]SD label?: %s", filepath_buf);
 #endif
         data->is_dir = true;
         data->result = 0;
@@ -409,10 +393,8 @@ boolean linkit_drv_general_handler(void *userdata)
     }
 
 #ifdef LINKITSTORAGE_DEBUG
-    Serial.print("[gen_op]");
-    Serial.print(data->op);
-    Serial.print(":");
-    Serial.println(result);
+    vm_log_info("[gen_op] %d : %d", data->op, result);
+
 #endif
 
     data->result = result < 0 ? false : true;
@@ -430,6 +412,7 @@ boolean linkit_drv_read_handler(void *userdata)
 
     if (!_conv_path(data->drv, data->filepath, filepath_buf))
     {
+        vm_log_info("can not convert");
         return true;
     }
 
