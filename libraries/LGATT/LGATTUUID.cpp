@@ -102,5 +102,5 @@ size_t LGATTUUID::printTo(Print &p) const
 
 void LGATTUUID::str2uuid(uint8_t *uuid_dst, const char *uuid) const
 {
-    str2uuid_int(uuid, uuid_dst);
+    str2uuid_int(uuid, uuid_dst, '-');
 }

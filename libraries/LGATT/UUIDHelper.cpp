@@ -2,8 +2,10 @@
 
 #define UUID_STR_LEN_128 (32)
 #define UUID_STR_LEN_16 (8)
+#define UUID_STR_LEN_6 (12)
 #define UUID_STR_LEN_2 (4)
-static uint32_t uuid_squeeze(uint8_t *str, uint8_t ch)
+
+uint32_t uuid_squeeze(uint8_t *str, uint8_t ch)
 {
     uint32_t i, j;
     for (i = 0, j = 0; str[i] != '\0'; i++)
@@ -18,7 +20,7 @@ static uint32_t uuid_squeeze(uint8_t *str, uint8_t ch)
     return j;
 }
 
-static uint8_t chr2u8(char chr)
+uint8_t chr2u8(char chr)
 {
     uint8_t ret = 0;
     if (chr >= '0' && chr <= '9')
@@ -36,7 +38,7 @@ static uint8_t chr2u8(char chr)
     return ret;
 }
 
-static void str2uuid_int(const char *str, uint8_t *uuid)
+void str2uuid_int(const char *str, uint8_t *uuid, uint8_t seperator)
 {
     uint32_t len = 0;
     uint8_t *uuid_str = NULL;
@@ -53,12 +55,13 @@ static void str2uuid_int(const char *str, uint8_t *uuid)
         memcpy(uuid_str, str, len);
         uuid_str[len] = '\0';
 
-        uuid_len = uuid_squeeze((uint8_t *)uuid_str, '-');
+        uuid_len = uuid_squeeze((uint8_t *)uuid_str, seperator);
 
         switch (uuid_len)
         {
         case UUID_STR_LEN_128:
         case UUID_STR_LEN_16:
+        case UUID_STR_LEN_6:
         case UUID_STR_LEN_2:
         {
             for (i = 0, j = uuid_len - 2; j >= 0; j -= 2)

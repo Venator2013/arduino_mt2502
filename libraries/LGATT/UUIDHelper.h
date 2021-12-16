@@ -1,12 +1,14 @@
 
 
-#ifndef __UUID_HELPE_H__
-#define __UUID_HELPE_H__
+#ifndef __UUID_HELPER_H__
+#define __UUID_HELPER_H__
 
-static uint32_t uuid_squeeze(uint8_t *str, uint8_t ch);
+#include <Arduino.h>
 
-static uint8_t chr2u8(char chr);
+uint32_t uuid_squeeze(uint8_t *str, uint8_t ch);
 
-static void str2uuid_int(const char *str, uint8_t *uuid);
+uint8_t chr2u8(char chr);
+
+void str2uuid_int(const char *str, uint8_t *uuid, uint8_t seperator);
 
 #endif
