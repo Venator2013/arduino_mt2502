@@ -15,6 +15,7 @@
 #include "LFlash.h"
 
 #include "vmfs.h"
+#include "vmlog.h"
 
 static boolean _get_drv_handler(void *userdata);
 
@@ -59,8 +60,7 @@ LFlashClass LFlash;
 static boolean _get_drv_handler(void *userdata)
 {
 #ifdef LINKITSTORAGE_DEBUG
-    Serial.print("vm_fs_get_internal_drive_letter()=");
-    Serial.println(vm_fs_get_internal_drive_letter());
+    vm_log_info("vm_fs_get_internal_drive_letter()=%s", vm_fs_get_internal_drive_letter());
 #endif
     *((VMCHAR *)userdata) = vm_fs_get_internal_drive_letter();
     return true;

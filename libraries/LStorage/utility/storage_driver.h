@@ -110,7 +110,7 @@ extern "C"
 #undef LINKITSTORAGE_DEBUG
 
 #ifdef LINKITSTORAGE_DEBUG
-#define LSLOG(x) Serial.println(x)
+#define LSLOG(x) vm_log_info(x)
 #else
 #define LSLOG(x)
 #endif

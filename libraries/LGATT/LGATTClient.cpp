@@ -9,9 +9,9 @@ int32_t LGATTClient::begin()
 }
 */
 #include "Arduino.h"
+#include "LTask.h"
 #include "vmlog.h"
 #include "vmthread.h"
-#include "LTask.h"
 
 boolean GATTCSetClient(LGATTClient *client);
 
