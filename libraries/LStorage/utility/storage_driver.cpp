@@ -27,7 +27,7 @@ static void _printwstr(VMWCHAR *filepath_buf)
 
 static boolean _conv_path(char drv, VMCSTR filepath, VMWSTR filepath_buf)
 {
-    int i;
+    int i = 0;
 
     memset(filepath_buf, 0, (VM_FS_MAX_PATH_LENGTH) * sizeof(VMWCHAR));
 
