@@ -631,6 +631,26 @@ void gatt_client_register_for_notification_callback(VM_BT_GATT_CONTEXT_HANDLE re
     LGATTClient *client = GATTCGetClient(reg_ctx);
 
     APP_LOG("[LGATT] gatt_client_register_for_notification_callback start status[%d] reg_ctx[0x%x]", status, reg_ctx);
+    APP_LOG("[LGATT] bd_addr [%02x:%02x:%02x:%02x:%02x:%02x]", bd_addr->data[5], bd_addr->data[4], bd_addr->data[3], bd_addr->data[2], bd_addr->data[1], bd_addr->data[0]);
+    APP_LOG("[LGATT] char [0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x]",
+            ch->ch_uuid->uuid.uuid[15],
+            ch->ch_uuid->uuid.uuid[14],
+            ch->ch_uuid->uuid.uuid[13],
+            ch->ch_uuid->uuid.uuid[12],
+            ch->ch_uuid->uuid.uuid[11],
+            ch->ch_uuid->uuid.uuid[10],
+            ch->ch_uuid->uuid.uuid[9],
+            ch->ch_uuid->uuid.uuid[8]);
+    APP_LOG("[LGATT] char [0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x]",
+            ch->ch_uuid->uuid.uuid[7],
+            ch->ch_uuid->uuid.uuid[6],
+            ch->ch_uuid->uuid.uuid[5],
+            ch->ch_uuid->uuid.uuid[4],
+            ch->ch_uuid->uuid.uuid[3],
+            ch->ch_uuid->uuid.uuid[2],
+            ch->ch_uuid->uuid.uuid[1],
+            ch->ch_uuid->uuid.uuid[0]);
+
     if (!client)
     {
         APP_LOG("[LGATT] FATAL 3");
@@ -639,16 +659,7 @@ void gatt_client_register_for_notification_callback(VM_BT_GATT_CONTEXT_HANDLE re
 
     if (status == VM_OS_STATUS_SUCCESS)
     {
-        /*
-            if (client->_cntx._isEnableNotification)
-            {
-                client->_cntx._isEnableNotification = true;
-            }
-            else
-            {
-                client->_cntx._isEnableNotification = false;
-            }
-            */
+        APP_LOG("Registration successfull");
         client->_return_value = true;
     }
     else
@@ -1155,10 +1166,13 @@ boolean gattEnableNotification(void *userData)
 
     if (client->_cntx._isEnableNotification)
     {
-
-        if (VM_IS_FAILED(vm_bt_gatt_client_register_for_notification(client->_cntx.reg_ctx,
-                                                                     (vm_bt_gatt_address_t *)&(client->_cntx._address),
-                                                                     &ch)))
+        if (VM_IS_SUCCEEDED(vm_bt_gatt_client_register_for_notification(client->_cntx.reg_ctx,
+                                                                        (vm_bt_gatt_address_t *)&(client->_cntx._address),
+                                                                        &ch)))
+        {
+            APP_LOG("Registration for notification succeeded");
+        }
+        else
         {
             APP_LOG("Registration for notification failed");
         }
