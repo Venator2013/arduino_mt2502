@@ -12,26 +12,26 @@ gatts_q_node::gatts_q_node(gatts_evt e, void *s) : evt(e), service(s), data(NULL
     switch (e)
     {
     case GATTS_EVENT_ON_CONNETION:
-        {
-            data = new LGATTConnection();
-        }
-        break;
+    {
+        data = new LGATTConnection();
+    }
+    break;
     case GATTS_EVENT_ON_CHAR_ADDED:
     case GATTS_EVENT_ON_DESC_ADDED:
-        {
-            data = new LGATTAttributeData();
-        }
-        break;
+    {
+        data = new LGATTAttributeData();
+    }
+    break;
     case GATTS_EVENT_ON_READ:
-        {
-            data = new LGATTReadRequest();
-        }
-        break;
+    {
+        data = new LGATTReadRequest();
+    }
+    break;
     case GATTS_EVENT_ON_WRITE:
-        {
-            data = new LGATTWriteRequest();
-        }
-        break;
+    {
+        data = new LGATTWriteRequest();
+    }
+    break;
     }
 }
 gatts_q_node::~gatts_q_node()
@@ -41,8 +41,8 @@ gatts_q_node::~gatts_q_node()
 
 LGATTService::LGATTService()
 {
-    //memset(this, 0, sizeof(LGATTService));
-    
+    // memset(this, 0, sizeof(LGATTService));
+
     _gatts_srv_ctx = gatts_new_ctx();
 }
 
@@ -54,30 +54,30 @@ LGATTService::~LGATTService()
 // characteristic added
 boolean LGATTService::onCharacteristicAdded(LGATTAttributeData &data)
 {
-    
+
     APP_LOG("LGATTService::onCharacteristicAdded -S");
     const vm_bt_uuid_with_length_t *uuid = &(data.uuid);
-    
-    APP_LOG("failed[%d], handle[%d], inst[%d], uuid[0x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x] len[%d]", 
-        data.failed, data.handle, 0, 
-        uuid->uuid[15], 
-        uuid->uuid[14], 
-        uuid->uuid[13], 
-        uuid->uuid[12], 
-        uuid->uuid[11], 
-        uuid->uuid[10], 
-        uuid->uuid[9], 
-        uuid->uuid[8], 
-        uuid->uuid[7], 
-        uuid->uuid[6], 
-        uuid->uuid[5], 
-        uuid->uuid[4], 
-        uuid->uuid[3], 
-        uuid->uuid[2], 
-        uuid->uuid[1], 
-        uuid->uuid[0], 
-        uuid->len);
-        
+
+    APP_LOG("failed[%d], handle[%d], inst[%d], uuid[0x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x] len[%d]",
+            data.failed, data.handle, 0,
+            uuid->uuid[15],
+            uuid->uuid[14],
+            uuid->uuid[13],
+            uuid->uuid[12],
+            uuid->uuid[11],
+            uuid->uuid[10],
+            uuid->uuid[9],
+            uuid->uuid[8],
+            uuid->uuid[7],
+            uuid->uuid[6],
+            uuid->uuid[5],
+            uuid->uuid[4],
+            uuid->uuid[3],
+            uuid->uuid[2],
+            uuid->uuid[1],
+            uuid->uuid[0],
+            uuid->length);
+
     APP_LOG("LGATTService::onCharacteristicAdded -E");
     return true;
 }
@@ -86,25 +86,25 @@ boolean LGATTService::onDescriptorAdded(LGATTAttributeData &data)
 {
     APP_LOG("LGATTService::onDescriptorAdded -S");
     const vm_bt_uuid_with_length_t *uuid = &(data.uuid);
-    APP_LOG("failed[%d], handle[%d], inst[%d], uuid[0x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x] len[%d]", 
-        data.failed, data.handle, 0, 
-        uuid->uuid[15], 
-        uuid->uuid[14], 
-        uuid->uuid[13], 
-        uuid->uuid[12], 
-        uuid->uuid[11], 
-        uuid->uuid[10], 
-        uuid->uuid[9], 
-        uuid->uuid[8], 
-        uuid->uuid[7], 
-        uuid->uuid[6], 
-        uuid->uuid[5], 
-        uuid->uuid[4], 
-        uuid->uuid[3], 
-        uuid->uuid[2], 
-        uuid->uuid[1], 
-        uuid->uuid[0], 
-        uuid->len);
+    APP_LOG("failed[%d], handle[%d], inst[%d], uuid[0x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x] len[%d]",
+            data.failed, data.handle, 0,
+            uuid->uuid[15],
+            uuid->uuid[14],
+            uuid->uuid[13],
+            uuid->uuid[12],
+            uuid->uuid[11],
+            uuid->uuid[10],
+            uuid->uuid[9],
+            uuid->uuid[8],
+            uuid->uuid[7],
+            uuid->uuid[6],
+            uuid->uuid[5],
+            uuid->uuid[4],
+            uuid->uuid[3],
+            uuid->uuid[2],
+            uuid->uuid[1],
+            uuid->uuid[0],
+            uuid->length);
     APP_LOG("LGATTService::onDescriptorAdded -E");
     return true;
 }
@@ -112,14 +112,13 @@ boolean LGATTService::onDescriptorAdded(LGATTAttributeData &data)
 boolean LGATTService::onConnection(const LGATTAddress &addr, boolean connected)
 {
     APP_LOG("LGATTService::onConnection -S");
-    APP_LOG("connected[%d], bd_addr[0x%02x%02x%02x%02x%02x%02x]", connected, 
-        addr.addr[0],
-        addr.addr[1],
-        addr.addr[2],
-        addr.addr[3],
-        addr.addr[4],
-        addr.addr[5]
-        );
+    APP_LOG("connected[%d], bd_addr[0x%02x%02x%02x%02x%02x%02x]", connected,
+            addr.addr[0],
+            addr.addr[1],
+            addr.addr[2],
+            addr.addr[3],
+            addr.addr[4],
+            addr.addr[5]);
     APP_LOG("LGATTService::onConnection -E");
     return true;
 }
@@ -128,16 +127,15 @@ boolean LGATTService::onRead(LGATTReadRequest &data)
 {
     APP_LOG("LGATTService::onRead -S");
     APP_LOG("tid[%d], bd_addr[0x%02x%02x%02x%02x%02x%02x] handle[%d], os[%d]",
-        data.trans_id, 
-        data.bd.addr[0],
-        data.bd.addr[1],
-        data.bd.addr[2],
-        data.bd.addr[3],
-        data.bd.addr[4],
-        data.bd.addr[5],
-        data.attr_handle,
-        data.offset
-        );
+            data.trans_id,
+            data.bd.addr[0],
+            data.bd.addr[1],
+            data.bd.addr[2],
+            data.bd.addr[3],
+            data.bd.addr[4],
+            data.bd.addr[5],
+            data.attr_handle,
+            data.offset);
     APP_LOG("LGATTService::onRead -E");
     return true;
 }
@@ -146,17 +144,16 @@ boolean LGATTService::onWrite(LGATTWriteRequest &data)
 {
     APP_LOG("LGATTService::onCharacteristicAdded -S");
     APP_LOG("tid[%d], bd_addr[0x%02x%02x%02x%02x%02x%02x] handle[%d], nr[%d]",
-        data.trans_id, 
-        data.bd.addr[0],
-        data.bd.addr[1],
-        data.bd.addr[2],
-        data.bd.addr[3],
-        data.bd.addr[4],
-        data.bd.addr[5],
-        data.attr_handle,
-        data.offset,
-        data.need_rsp
-        );
+            data.trans_id,
+            data.bd.addr[0],
+            data.bd.addr[1],
+            data.bd.addr[2],
+            data.bd.addr[3],
+            data.bd.addr[4],
+            data.bd.addr[5],
+            data.attr_handle,
+            data.offset,
+            data.need_rsp);
     APP_LOG("value [%s][%d]", data.value.value, data.value.len);
     APP_LOG("LGATTService::onCharacteristicAdded -E");
     return true;
@@ -172,7 +169,7 @@ boolean LGATTService::begin(const LGATTUUID &uuid, int32_t index, int32_t timeou
         APP_LOG("LGATTService::begin onLoadService FAILED");
         return false;
     }
-    //Serial.print(uuid);
+    // Serial.print(uuid);
     memcpy(_uuid, &uuid, sizeof(_uuid));
     // do register do profiles creation(add service, add characteristic, add discriptor)
     GATTS_REMOTE_CALL(ACTION_BEGIN, gattServiceRemoteCallHandler, this);
@@ -192,7 +189,7 @@ void LGATTService::end()
 boolean LGATTService::sendIndication(const LGATTAttributeValue &value, uint16_t attr_handle, boolean needConfirm) // true : indication; false : notify
 {
     APP_LOG("LGATTService::send -S");
-    _value = (LGATTAttributeValue*)&value;
+    _value = (LGATTAttributeValue *)&value;
     _attr_handle = attr_handle;
     _confirm_failed = needConfirm;
     GATTS_REMOTE_CALL(ACTION_SEND, gattServiceRemoteCallHandler, this);
@@ -203,7 +200,7 @@ boolean LGATTService::sendIndication(const LGATTAttributeValue &value, uint16_t 
 boolean LGATTService::sendResponse(const LGATTAttributeValue &value, uint16_t attr_handle, boolean failed, uint16_t trans_id) // ACK
 {
     APP_LOG("LGATTService::send ACK -S");
-    _value = (LGATTAttributeValue*)&value;
+    _value = (LGATTAttributeValue *)&value;
     _attr_handle = attr_handle;
     _confirm_failed = failed;
     _trans_id = trans_id;
@@ -218,7 +215,8 @@ LGATTServerClass::LGATTServerClass()
 }
 
 LGATTServerClass::~LGATTServerClass()
-{}
+{
+}
 
 static LGATTUUID g_gatts_uuid("9D6EB1F1-F16D-5B84-5640-E5FF491FA020");
 
@@ -233,14 +231,14 @@ boolean LGATTServerClass::begin(int32_t service_nums, ...)
     LGATTUUID uuidObj = g_gatts_uuid;
 
     vm_bt_uuid_with_length_t *uuidInt = (vm_bt_uuid_with_length_t *)&uuidObj;
-    //memcpy(_uuid.uu, uuid, sizeof(_uuid.uu));
+    // memcpy(_uuid.uu, uuid, sizeof(_uuid.uu));
     GATTS_REMOTE_CALL(ACTION_BEGIN, gattServerRemoteCallHandler, this);
 
     va_list args;
     va_start(args, service_nums);
     for (int i = 0; i < service_nums; i++)
     {
-        _gatts_service[i] = va_arg(args, LGATTService *); 
+        _gatts_service[i] = va_arg(args, LGATTService *);
         uuidInt->uuid[0] += i;
         _gatts_service[i]->begin(uuidObj, i);
     }
@@ -249,7 +247,6 @@ boolean LGATTServerClass::begin(int32_t service_nums, ...)
     APP_LOG("LGATTServerClass::begin -E");
     return _result;
 }
-
 
 void LGATTServerClass::end()
 {
@@ -268,38 +265,42 @@ void LGATTServerClass::handleEvents()
     while (node)
     {
         APP_LOG("LGATTServer::handleEvents event[%d]", node->evt);
-        LGATTService *service = (LGATTService*)node->service;
+        LGATTService *service = (LGATTService *)node->service;
         node->data->_srv = service;
         switch (node->evt)
         {
         case GATTS_EVENT_ON_CONNETION:
-            {
-                LGATTConnection &connection = *(LGATTConnection*)node->data;
-                ret = service->onConnection(connection.addr, connection.connected);
-            }break;
+        {
+            LGATTConnection &connection = *(LGATTConnection *)node->data;
+            ret = service->onConnection(connection.addr, connection.connected);
+        }
+        break;
         case GATTS_EVENT_ON_CHAR_ADDED:
-            {
-                ret = service->onCharacteristicAdded(*(LGATTAttributeData*)node->data);
-            }break;
+        {
+            ret = service->onCharacteristicAdded(*(LGATTAttributeData *)node->data);
+        }
+        break;
         case GATTS_EVENT_ON_DESC_ADDED:
-            {
-                ret = service->onDescriptorAdded(*(LGATTAttributeData*)node->data);
-            }break;
+        {
+            ret = service->onDescriptorAdded(*(LGATTAttributeData *)node->data);
+        }
+        break;
         case GATTS_EVENT_ON_READ:
-            {
-                ret = service->onRead(*(LGATTReadRequest*)node->data);
-            }break;
+        {
+            ret = service->onRead(*(LGATTReadRequest *)node->data);
+        }
+        break;
         case GATTS_EVENT_ON_WRITE:
-            {
-                ret = service->onWrite(*(LGATTWriteRequest*)node->data);
-            }break;
+        {
+            ret = service->onWrite(*(LGATTWriteRequest *)node->data);
+        }
+        break;
         default:
             break;
         }
         delete node;
         deQ();
         node = frQ();
-
     }
 
     APP_LOG("LGATTServer::handleEvents -E");
@@ -343,7 +344,7 @@ boolean LGATTServerClass::deQ()
         mutexUnlock();
         return false;
     }
-    
+
     _fr = (_fr + 1) % MAX_QUEUE_NODES;
     _size--;
 
@@ -358,13 +359,9 @@ gatts_q_node *LGATTServerClass::frQ()
     {
         mutexUnlock();
         return NULL;
-    }   
+    }
 
     gatts_q_node *tmp = _cq[_fr];
     mutexUnlock();
     return tmp;
 }
-
-
-
-
