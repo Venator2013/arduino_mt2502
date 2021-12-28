@@ -290,8 +290,8 @@ void gatt_client_vmt_scan_result_callback(VM_BT_GATT_CONTEXT_HANDLE reg_ctx, vm_
     /* Code Body                                                      */
     /*----------------------------------------------------------------*/
     APP_LOG("[LGATT] gatt_client_vmt_scan_result_callback - Start,  bd_addr %x:%x:%x:%x:%x:%x!\n",
-            bd_addr->addr[0], bd_addr->addr[1], bd_addr->addr[2],
-            bd_addr->addr[3], bd_addr->addr[4], bd_addr->addr[5]);
+            bd_addr->data[0], bd_addr->data[1], bd_addr->data[2],
+            bd_addr->data[3], bd_addr->data[4], bd_addr->data[5]);
 
     LGATTClient *client = GATTCGetClient(reg_ctx);
     if (!client)
@@ -360,8 +360,8 @@ void gatt_client_connection_callback(const vm_bt_gatt_connection_t *conn, VMBOOL
     // APP_LOG("[LGATT] XXX - check conn->, context_handle = %x, connection_handle = %x ", conn->context_handle, conn->connection_handle);
 
     APP_LOG("[LGATT] gatt_client_connection_callback - check bt_addr, bd_addr = [%02x:%02x:%02x:%02x:%02x:%02x]\n",
-            bd_addr->addr[5], bd_addr->addr[4],
-            bd_addr->addr[3], bd_addr->addr[2], bd_addr->addr[1], bd_addr->addr[0]);
+            bd_addr->data[5], bd_addr->data[4],
+            bd_addr->data[3], bd_addr->data[2], bd_addr->data[1], bd_addr->data[0]);
 
     APP_LOG("[LGATT] gatt_client_connection_callback - connected result = %d", connected);
     if (connected)
@@ -437,8 +437,8 @@ void gatt_client_search_complete_callback(vm_bt_gatt_connection_t *reg_ctx, VMBO
 
 void gatt_client_search_result_callback(vm_bt_gatt_connection_t *conn, vm_bt_gatt_service_info_t *uuid)
 {
-    APP_LOG("[LGATT] gatt_client_search_result_callback - Start conn[0x%x] reg_ctx[0x%x] conn_ctx[0x%x] uuid[0x%x]",
-            conn, conn->reg_ctx, conn->conn_ctx, uuid);
+    APP_LOG("[LGATT] gatt_client_search_result_callback - Start conn[0x%x] uuid[0x%x]",
+            conn, uuid);
     LGATTClient *client = GATTCGetClient(conn->context_handle);
     if (!client)
     {
@@ -514,58 +514,15 @@ void gatt_client_get_characteristic_callback(vm_bt_gatt_connection_t *conn, VMBO
         APP_LOG("START Char UUID : [%s]", logGATTUUID(startCharUUID));
         APP_LOG("Char UUID : [%s]", logGATTUUID(charUUID));
         APP_LOG("properties [0x%x]", client->cb_data.characteristic.properties);
-        APP_LOG("reg_ctx[0x%x], conn_ctx[0x%x]", conn->reg_ctx, conn->conn_ctx);
+        // APP_LOG("reg_ctx[0x%x], conn_ctx[0x%x]", conn->reg_ctx, conn->context_handle);
     }
     else
     {
         memset(&(client->cb_data.characteristic), 0, sizeof(client->cb_data.characteristic));
         client->_return_value = false;
     }
-    /*
-        APP_LOG("[LGATT] gatt_client_get_characteristic_callback - ch = %x", ch);
-        APP_LOG("[LGATT] XXX - ch->svc_uuid = %x", ch->svc_uuid);
-        APP_LOG("[LGATT] XXX - ch->ch_uuid = %x", ch->ch_uuid);
 
-        APP_LOG("[LGATT] svc [0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x]",
-            ch->svc_uuid->uuid.uuid.uuid[15],
-            ch->svc_uuid->uuid.uuid.uuid[14],
-            ch->svc_uuid->uuid.uuid.uuid[13],
-            ch->svc_uuid->uuid.uuid.uuid[12],
-            ch->svc_uuid->uuid.uuid.uuid[11],
-            ch->svc_uuid->uuid.uuid.uuid[10],
-            ch->svc_uuid->uuid.uuid.uuid[9],
-            ch->svc_uuid->uuid.uuid.uuid[8],
-            ch->svc_uuid->uuid.uuid.uuid[7],
-            ch->svc_uuid->uuid.uuid.uuid[6],
-            ch->svc_uuid->uuid.uuid.uuid[5],
-            ch->svc_uuid->uuid.uuid.uuid[4],
-            ch->svc_uuid->uuid.uuid.uuid[3],
-            ch->svc_uuid->uuid.uuid.uuid[2],
-            ch->svc_uuid->uuid.uuid.uuid[1],
-            ch->svc_uuid->uuid.uuid.uuid[0]);
-
-        APP_LOG("[LGATT]char [0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x]",
-            ch->ch_uuid->uuid.uuid[15],
-            ch->ch_uuid->uuid.uuid[14],
-            ch->ch_uuid->uuid.uuid[13],
-            ch->ch_uuid->uuid.uuid[12],
-            ch->ch_uuid->uuid.uuid[11],
-            ch->ch_uuid->uuid.uuid[10],
-            ch->ch_uuid->uuid.uuid[9],
-            ch->ch_uuid->uuid.uuid[8],
-            ch->ch_uuid->uuid.uuid[7],
-            ch->ch_uuid->uuid.uuid[6],
-            ch->ch_uuid->uuid.uuid[5],
-            ch->ch_uuid->uuid.uuid[4],
-            ch->ch_uuid->uuid.uuid[3],
-            ch->ch_uuid->uuid.uuid[2],
-            ch->ch_uuid->uuid.uuid[1],
-            ch->ch_uuid->uuid.uuid[0]);
-            */
     client->cb_data.characteristic.status = (lgatt_os_status)status;
-    // memcpy(&(client->cb_data.characteristic.ch.svc_uuid), ch->svc_uuid, sizeof(lgatt_svc_uuid));
-    // memcpy(&(client->cb_data.characteristic.ch.ch_uuid), ch->ch_uuid, sizeof(lgatt_att_uuid));
-    // client->cb_data.characteristic.ch = (lgatt_char_struct*)ch;
 
     client->post_signal();
     APP_LOG("[LGATT] gatt_client_get_characteristic_callback - End");
@@ -716,7 +673,7 @@ void gatt_client_notify_callback(vm_bt_gatt_connection_t *conn, vm_bt_gatt_addre
 {
     LGATTClient *client = GATTCGetClient(conn->context_handle);
 
-    APP_LOG("[LGATT] gatt_client_notify_callback is_notify[%d]", is_notify, conn->reg_ctx, conn->conn_ctx);
+    APP_LOG("[LGATT] gatt_client_notify_callback is_notify[%d]", is_notify);
     if (!client)
     {
         APP_LOG("[LGATT] FATAL 3");
@@ -736,8 +693,8 @@ void gatt_client_notify_callback(vm_bt_gatt_connection_t *conn, vm_bt_gatt_addre
 
     APP_LOG("[LGATT] value[%s][%d]", client->_cntx._currNotificationData._attrValue.value, client->_cntx._currNotificationData._attrValue.len);
     APP_LOG("[LGATT] gatt_client_notify_callback - end bd_addr = [%02x:%02x:%02x:%02x:%02x:%02x]",
-            bd_addr->addr[5], bd_addr->addr[4],
-            bd_addr->addr[3], bd_addr->addr[2], bd_addr->addr[1], bd_addr->addr[0]);
+            bd_addr->data[5], bd_addr->data[4],
+            bd_addr->data[3], bd_addr->data[2], bd_addr->data[1], bd_addr->data[0]);
 }
 
 void gatt_client_read_characteristic_callback(vm_bt_gatt_connection_t *conn, VMBOOL status, vm_bt_gatt_client_characteristic_t *ch, vm_bt_gatt_attribute_value_t *value)
@@ -745,7 +702,7 @@ void gatt_client_read_characteristic_callback(vm_bt_gatt_connection_t *conn, VMB
 
     LGATTClient *client = GATTCGetClient(conn->context_handle);
 
-    APP_LOG("[LGATT] gatt_client_read_characteristic_callback start status[%d] context_handle[0x%x] conn_ctx[0x%x]", status, conn->context_handle, conn->conn_ctx);
+    APP_LOG("[LGATT] gatt_client_read_characteristic_callback start status[%d] context_handle[0x%x] ", status, conn->context_handle);
     if (!client)
     {
         APP_LOG("[LGATT] FATAL 3");
@@ -754,7 +711,7 @@ void gatt_client_read_characteristic_callback(vm_bt_gatt_connection_t *conn, VMB
 
     APP_LOG("svc_uuid[0x%x] ch_uuid[0x%x]", ch->svc_uuid, ch->ch_uuid);
 
-    APP_LOG("len[%d] [%s]", value->len, value->value);
+    APP_LOG("len[%d] [%s]", value->length, value->data);
     /*
         VMUINT16 len = value->len;
         while (len--)
@@ -776,7 +733,7 @@ void gatt_client_read_characteristic_callback(vm_bt_gatt_connection_t *conn, VMB
         LGATTUUID charUUID = *((vm_bt_uuid_with_length_t *)&(client->cb_data.read_characteristic.ch.ch_uuid.uuid));
         APP_LOG("Service UUID : [%s]", logGATTUUID(svcUUID));
         APP_LOG("Char UUID : [%s]", logGATTUUID(charUUID));
-        APP_LOG("value[%s] len[%d]", value->value, value->len);
+        APP_LOG("value[%s] len[%d]", value->data, value->length);
     }
     else
     {
@@ -1199,9 +1156,12 @@ boolean gattEnableNotification(void *userData)
     if (client->_cntx._isEnableNotification)
     {
 
-        vm_bt_gatt_client_register_for_notification(client->_cntx.reg_ctx,
-                                                    (vm_bt_gatt_address_t *)&(client->_cntx._address),
-                                                    &ch);
+        if (VM_IS_FAILED(vm_bt_gatt_client_register_for_notification(client->_cntx.reg_ctx,
+                                                                     (vm_bt_gatt_address_t *)&(client->_cntx._address),
+                                                                     &ch)))
+        {
+            APP_LOG("Registration for notification failed");
+        }
     }
     else
     {
@@ -1213,31 +1173,6 @@ boolean gattEnableNotification(void *userData)
     return true;
 }
 
-boolean gattQueryNotification(void *userData)
-{
-    LGATTClient *client = (LGATTClient *)userData;
-
-    APP_LOG("[LGATT]enableNotification - register notification Start");
-
-    if (!client)
-    {
-        APP_LOG("[LGATT] FATAL 3");
-        return true;
-    }
-
-    if (client->_cntx._currNotificationData._attrValue.len > 0)
-    {
-        client->_return_value = true;
-    }
-    else
-    {
-        client->_return_value = false;
-    }
-
-    APP_LOG("[LGATT]enableNotification - register notification ret[%d] End", client->_return_value);
-
-    return false;
-}
 boolean gattGetCharacteristic(void *userData)
 {
     APP_LOG("[LGATT]gattGetCharacteristic - Start");
@@ -1385,7 +1320,7 @@ boolean gattWriteCharacteristic(void *userData)
     APP_LOG("Service isPrimary[%d], inst[%d]", ch.svc_uuid->is_primary, ch.svc_uuid->uuid.inst);
     APP_LOG("Char UUID : [%s]", logGATTUUID(charUUID));
     APP_LOG("cb_data.conn.reg_ctx[0x%x], cb_data.conn.conn_ctx[0x%x]", client->cb_data.conn.reg_ctx, client->cb_data.conn.conn_ctx);
-    APP_LOG("value [%s] len[%d]", att_value.value, att_value.length);
+    APP_LOG("value [%s] len[%d]", att_value.data, att_value.length);
 
     ret = vm_bt_gatt_client_write_characteristic(
         (vm_bt_gatt_connection_t *)&(client->cb_data.conn),

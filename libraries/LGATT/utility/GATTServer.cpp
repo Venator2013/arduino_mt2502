@@ -430,10 +430,10 @@ void GATTService::register_server_callback(VM_BT_GATT_CONTEXT_HANDLE reg_ctx, VM
     if (service)
     {
         APP_LOG("uuid[0x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x%x] -s",
-                app_uuid->uu[0], app_uuid->uu[1], app_uuid->uu[2], app_uuid->uu[3],
-                app_uuid->uu[4], app_uuid->uu[5], app_uuid->uu[6], app_uuid->uu[7],
-                app_uuid->uu[8], app_uuid->uu[9], app_uuid->uu[10], app_uuid->uu[11],
-                app_uuid->uu[12], app_uuid->uu[13], app_uuid->uu[14], app_uuid->uu[15]);
+                ((vm_bt_uuid_struct *)app_uuid)->uu[0], ((vm_bt_uuid_struct *)app_uuid)->uu[1], ((vm_bt_uuid_struct *)app_uuid)->uu[2], ((vm_bt_uuid_struct *)app_uuid)->uu[3],
+                ((vm_bt_uuid_struct *)app_uuid)->uu[4], ((vm_bt_uuid_struct *)app_uuid)->uu[5], ((vm_bt_uuid_struct *)app_uuid)->uu[6], ((vm_bt_uuid_struct *)app_uuid)->uu[7],
+                ((vm_bt_uuid_struct *)app_uuid)->uu[8], ((vm_bt_uuid_struct *)app_uuid)->uu[9], ((vm_bt_uuid_struct *)app_uuid)->uu[10], ((vm_bt_uuid_struct *)app_uuid)->uu[11],
+                ((vm_bt_uuid_struct *)app_uuid)->uu[12], ((vm_bt_uuid_struct *)app_uuid)->uu[13], ((vm_bt_uuid_struct *)app_uuid)->uu[14], ((vm_bt_uuid_struct *)app_uuid)->uu[15]);
 
         // add the reg_ctx to service
         SRV_CTX(service)->reg_ctx = reg_ctx;
@@ -479,7 +479,7 @@ void GATTService::service_added_callback(VMBOOL status, VM_BT_GATT_CONTEXT_HANDL
                     srvc_id->uuid.uuid.uuid[4], srvc_id->uuid.uuid.uuid[5], srvc_id->uuid.uuid.uuid[6], srvc_id->uuid.uuid.uuid[7],
                     srvc_id->uuid.uuid.uuid[8], srvc_id->uuid.uuid.uuid[9], srvc_id->uuid.uuid.uuid[10], srvc_id->uuid.uuid.uuid[11],
                     srvc_id->uuid.uuid.uuid[12], srvc_id->uuid.uuid.uuid[13], srvc_id->uuid.uuid.uuid[14], srvc_id->uuid.uuid.uuid[15],
-                    srvc_id->is_primary, srvc_id->uuid.inst, srvc_id->uuid.uuid.len);
+                    srvc_id->is_primary, srvc_id->uuid.inst, srvc_id->uuid.uuid.length);
 
             APP_LOG("srvc_id has");
         }
@@ -550,7 +550,7 @@ void GATTService::characteristic_added_callback(VMBOOL status, VM_BT_GATT_CONTEX
                         uuid->uuid.uuid[4], uuid->uuid.uuid[5], uuid->uuid.uuid[6], uuid->uuid.uuid[7],
                         uuid->uuid.uuid[8], uuid->uuid.uuid[9], uuid->uuid.uuid[10], uuid->uuid.uuid[11],
                         uuid->uuid.uuid[12], uuid->uuid.uuid[13], uuid->uuid.uuid[14], uuid->uuid.uuid[15],
-                        uuid->inst, uuid->uuid.len);
+                        uuid->inst, uuid->uuid.length);
             }
             // ret = int_gatt_set_characteristic(ctx, char_handle, uuid);
             gatts_q_node *node = new gatts_q_node(GATTS_EVENT_ON_CHAR_ADDED, service);
